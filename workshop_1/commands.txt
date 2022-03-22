@@ -1,0 +1,29 @@
+python3.9 regex.py -m 'first_match' -r METTL -t pubmed.html
+
+python3.9 regex.py -m 'first_match' -r METTL -t pubmed.html -c matches.tsv
+
+python3.9 regex.py -m 'first_match' -r METTL -t pubmed.html -c matches.tsv -o
+
+# Fix all of these by using
+python3.9 regex.py -m 'all_matches' -r METTL -t pubmed.html -c matches.tsv -o
+
+
+
+
+
+# Print all the matches
+python3.9 regex.py -m 'all_matches' -r METTL -t pubmed.html -c matches.tsv -o -p
+
+python3.9 regex.py -m 'all_matches' -r METTL\d+ -t pubmed.html -c matches.tsv -o -p
+
+python3.9 regex.py -m 'all_matches' -r 'METTL\d+' -t pubmed.html -c matches.tsv -o -p
+
+
+
+
+# Print all the matches but using a true negatives file
+python3.9 regex.py -m 'all_matches' -r 'METTL14' -t pubmed.html -c matches.tsv -o -p -n true_negatives.tsv
+
+python3.9 regex.py -m 'all_matches' -r 'METTL' -t pubmed.html -c matches.tsv -o -p -n true_negatives.tsv
+
+python3.9 regex.py -m 'all_matches' -r 'METTL\d+' -t pubmed.html -c matches.tsv -o -p -n true_negatives.tsv
