@@ -203,7 +203,7 @@ class Regex:
         # Try to get the file and search it.
         try:
 
-            # Errors="ignore" required on windows
+            # errors="ignore" required on windows
             # Source: https://stackoverflow.com/a/50709581
             with open(search_text, 'r', errors="ignore") as f:
             
