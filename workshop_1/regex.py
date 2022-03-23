@@ -202,8 +202,10 @@ class Regex:
 
         # Try to get the file and search it.
         try:
-            
-            with open(search_text, 'r') as f:
+
+            # Errors="ignore" required on windows
+            # Source: https://stackoverflow.com/a/50709581
+            with open(search_text, 'r', errors="ignore") as f:
             
                 # Completely remove newlines, making one massive
                 # string.
