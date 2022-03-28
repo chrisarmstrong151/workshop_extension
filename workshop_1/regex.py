@@ -21,7 +21,7 @@ requiredNamed = parser.add_argument_group('required named arguments')
 requiredNamed.add_argument(
     '-m', 
     '--method', 
-    help = 'Which regex search option to use.  The options are \'all_matches\', \'first_match\', and \'split_on_matches\'.', 
+    help = 'Which regex search option to use.  The options are \'all_matches\', \'first_match\'.', 
     required = True
 )
 
