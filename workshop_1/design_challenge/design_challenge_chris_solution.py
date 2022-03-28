@@ -1,10 +1,13 @@
 # Command line arguments
 import argparse
 
+# Nice printing for dictionaries
+import json
+
 # Regular expressions
 import re
 
-#hi chris
+
 
 
 # Initialize parser.
@@ -249,11 +252,13 @@ for t in test:
         # Get the position of the match, then partition
         # the string based on this position.
         match_position = m.group().index('<sup>i</sup>')
+        print('match_position: ' + str(match_position))
         
         print('@@@@@@@@@@@@@@')
         dbname = m.group()[0:match_position]
         links = m.group()[match_position+12:]
         print(dbname)
+        print('%%%%%%%%%%%%%%%%%%%%%')
         print(links)
         print('###################')
         
@@ -265,12 +270,12 @@ for t in test:
             
             # Just keep the last part of the string
             # past the match.
+            print('DATABASE NAME')
+            print(dbname[last_char_search+1:])
 
             # Add to the results.
             if dbname[last_char_search+1:] not in db_links:
                 db_links[dbname[last_char_search+1:]] = []
-            
-            print(dbname[last_char_search+1:])
             
             # Find the links after the sup tags.
             links_search = rgx.searcher(
@@ -290,13 +295,34 @@ for t in test:
 
                     # Now just keep characters from the
                     # right side, like above.
-                    last_char_search = a.rfind('>')
+                    last_char_search_links = a.rfind('>')
 
-                    if last_char_search != -1:
+                    if last_char_search_links != -1:
 
                         # Append.
-                        #db_links[dbname[last_char_search+1:]].append(a[last_char_search+1:])
-                        print('~~~~~~~~')
+                        print('Attempt to append...')
+                        print(db_links[dbname[last_char_search+1:]])
                         print(a[last_char_search+1:])
+                        db_links[dbname[last_char_search+1:]].append(a[last_char_search_links+1:])
+                        print('~~~~~~~~')
+                        print(a[last_char_search_links+1:])
 
     print('###########################')
+
+# Quick and dirty method to get the unique values
+# from db_links.
+db_links_keys = db_links.keys()
+
+pretty = {}
+
+for k in db_links_keys:
+    pretty[k] = list(set(db_links[k]))
+
+# Print it nice and pretty.
+print(
+    json.dumps(
+        pretty,
+        indent = 4,
+        sort_keys = True
+    )
+)
