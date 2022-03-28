@@ -307,7 +307,7 @@ for t in test:
                         print('~~~~~~~~')
                         print(a[last_char_search_links+1:])
 
-    print('###########################')
+    print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&')
 
 # Quick and dirty method to get the unique values
 # from db_links.
