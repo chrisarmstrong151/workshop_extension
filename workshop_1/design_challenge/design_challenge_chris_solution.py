@@ -219,7 +219,7 @@ test = rgx.regex_search(
 )
 
 # print(test)
-# print(len(test))
+print(len(test))
 
 print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
 
