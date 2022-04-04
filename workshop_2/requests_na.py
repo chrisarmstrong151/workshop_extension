@@ -24,6 +24,13 @@ parser = argparse.ArgumentParser(
 
 requiredNamed = parser.add_argument_group('required named arguments')
 
+# Goal 1
+requiredNamed.add_argument(
+    '-i', 
+    '--id', 
+    help = 'The Gene Ontology (GO) ID.',
+    required = True
+)
 
 
 
@@ -87,7 +94,20 @@ class Requestor:
     
         # Make the request and get the JSON.
         
-        # Missing some code here...
+        # Make the request and get the JSON.
+        print('https://api.geneontology.org/api/bioentity/function/' + '2345235432523542345' + which_id)
+        print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@')
+        r = requests.get(
+            url = 'https://api.geneontology.org/api/bioentity/function/' + '2345235432523542345' + which_id
+        )
+        print(r)
+        processed_response = r.json()
+        print('*************************************************')
+        print(processed_response)
+        # print(q)
+
+        # Define a list to hold Panther Family values.
+        panther_families = []
 
         # Go over each item in the processed response
         # and extract the family values.
@@ -99,23 +119,97 @@ class Requestor:
         # get them anyways.
         panther_families = list(set(panther_families))
 
-        # Pick a random one to make the second request.
-        random_panther_family = random.choice(panther_families)
-
-        # Get rid of the portion of the string that cannot be used
-        # to search.
+        try:
         
-        # Missing some code here...
+            # Pick a random one to make the second request.
+            random_panther_family = random.choice(panther_families)
 
-        print(
-            json.dumps(
-                obj = processed_response,
-                indent = 4,
-                sort_keys = True
+            # Get rid of the portion of the string that cannot be used
+            # to search.
+            
+            # Get rid of the portion of the string that cannot be used
+            # to search.
+            random_panther_family = random_panther_family.split(':')[1]
+
+            # Make the second request using POST.
+            r = requests.post(
+                url = 'http://pantherdb.org/services/oai/pantherdb/familymsa?family=' + random_panther_family + 'CORRUPTEDSTUFF'
             )
-        )
 
-        return processed_response
+            # Print the result and return it.
+            processed_response = r.json()
+
+            print(
+                json.dumps(
+                    obj = processed_response,
+                    indent = 4,
+                    sort_keys = True
+                )
+            )
+
+            return processed_response
+        
+        except IndexError:
+
+            print('Poorly formed request.  Quitting...')
+
+            return -1
+    
+
+    # Strip the terms.
+    def strip_terms(
+        self
+    ):
+
+        # Open the file.
+        with open('goslim_mouse.obo', 'r') as f:
+
+            # Create a [Term] list.
+            Term_list = []
+
+            # Create a Term dict.
+            Term_dict = {}
+            
+            # Go line-by-line.
+            for line in f.readlines():
+                
+                # How do you avoid using a regular expression
+                # to not read trash after [Term]?
+                if line == '[Typedef]\n':
+                    break
+                
+                # Only append 'id' and 'def' lines.
+                if 'id: ' in line and 'alt_id: ' not in line:
+                    Term_list.append(line.split('id: ')[1].strip())
+                
+                if 'name: ' in line:
+                    Term_list.append(line.split('name: ')[1].strip())
+                
+                if 'def: "' in line:
+                    
+                    # Get rid of the double quotes.
+
+                    # Split first.
+                    split_up = line.split('def: ')[1].strip()
+
+                    # Replace the double quotes.
+                    split_up = split_up.replace('"', '')
+                    
+                    # Append.
+                    Term_list.append(split_up)
+            
+            # Every 0th entry in Term_list is a GO ID,
+            # every 1st entry in Term_list is a name,
+            # and every 2nd entry in Term_list is a def.
+            for i in range(0, len(Term_list), 3):
+                
+                # Add the GO ID first, then set values.
+                Term_dict[Term_list[i]] = {}            
+                Term_dict[Term_list[i]]['name'] = Term_list[i+1]
+                Term_dict[Term_list[i]]['def'] = Term_list[i+2]
+            
+            # Kick it back.
+            return Term_dict
 
 
 
@@ -136,6 +230,7 @@ test = rqstr.look_for_identity(
 
 # Only make an API request if the identity was found.
 if test is not None:
+    print('ID was found...')
     rqstr.make_request(
         which_id = args.id
     )
